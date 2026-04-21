@@ -292,6 +292,7 @@ textarea::placeholder{color:var(--text3)}
 <!-- Edit mode banner -->
 <div class="edit-banner" id="editBanner">
   <span>Нажми на карточку, чтобы <strong>включить/выключить</strong> микс</span>
+  <button class="edit-select-all" id="editHideRevBtn" onclick="toggleHideWithReviews()">Скрыть с отзывами</button>
   <button class="edit-select-all" onclick="selectAllMixes()">Выбрать все</button>
   <button class="edit-done" onclick="toggleEditMode()">✓ Готово</button>
 </div>
@@ -299,8 +300,9 @@ textarea::placeholder{color:var(--text3)}
 <div id="mixesPage">
 <div class="controls">
   <div class="controls-row">
-    <button class="bowl-btn active" onclick="setBowl(20,this)">Убивашка ~20г</button>
-    <button class="bowl-btn" onclick="setBowl(15,this)">Фанел ~15г</button>
+    <button class="bowl-btn active" onclick="setBowl('all',this)">Все чаши</button>
+    <button class="bowl-btn" onclick="setBowl('убивашка',this)">Убивашка ~20г</button>
+    <button class="bowl-btn" onclick="setBowl('фанел',this)">Фанел ~15г</button>
     <span style="width:1px;height:24px;background:rgba(255,255,255,0.08)"></span>
     <div id="catFilters" style="display:contents"></div>
   </div>
@@ -396,8 +398,8 @@ function packHint(m){
     'центр+края':'доминант (больший %) — по краям и дну, акцент — в центр'
   }[m]||'';
 }
-let mixes=[],bowlSize=20,activeCat='all',activeStrength='all',selectedBowl='',selectedRating=0;
-let editMode=false;
+let mixes=[],activeBowl='all',activeCat='all',activeStrength='all',selectedBowl='',selectedRating=0;
+let editMode=false, editHideWithReviews=false;
 let currentRandomId=null;
 // filters for random splash
 let rpfBowl='any', rpfRev='all';
@@ -434,8 +436,13 @@ function getAvailableMixes(){
   const ua=getUnavailable();
   return mixes.filter(m=>!ua.includes(m.id));
 }
+function getAvailableMixesFiltered(){
+  let p=getAvailableMixes();
+  if(activeBowl!=='all') p=p.filter(m=>m.recommended_bowl===activeBowl);
+  return p;
+}
 function updateRandCount(){
-  const avail=getAvailableMixes().length;
+  const avail=getAvailableMixesFiltered().length;
   const total=mixes.length;
   document.getElementById('randCount').textContent = avail < total ? `(${avail}/${total})` : '';
 }
@@ -497,9 +504,19 @@ function setCat(c,el){
   renderGrid();
 }
 function setBowl(s,el){
-  bowlSize=s;
+  activeBowl=s;
   document.querySelectorAll('.bowl-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
+  renderGrid();
+  updateRandCount();
+}
+function toggleHideWithReviews(){
+  editHideWithReviews=!editHideWithReviews;
+  const btn=document.getElementById('editHideRevBtn');
+  if(btn){
+    btn.textContent=editHideWithReviews?'✓ Скрыты с отзывами':'Скрыть с отзывами';
+    btn.style.background=editHideWithReviews?'rgba(45,212,191,0.18)':'';
+  }
   renderGrid();
 }
 function setStrength(s,el){
@@ -517,9 +534,16 @@ function stockBadgeFor(it){
   return {cls:'',badge:''};
 }
 
+function bowlGramsFor(m){
+  if(activeBowl==='убивашка') return 20;
+  if(activeBowl==='фанел') return 15;
+  return m.recommended_bowl==='фанел'?15:20;
+}
 function renderGrid(){
   let filtered=activeCat==='all'?mixes:mixes.filter(m=>m.category===activeCat);
   if(activeStrength!=='all') filtered=filtered.filter(m=>m.strength===activeStrength);
+  if(activeBowl!=='all') filtered=filtered.filter(m=>m.recommended_bowl===activeBowl);
+  if(editMode && editHideWithReviews) filtered=filtered.filter(m=>(m.review_count||0)===0);
   const g=document.getElementById('grid');
   const ua=getUnavailable();
   g.innerHTML=filtered.map(m=>{
@@ -552,7 +576,7 @@ function renderGrid(){
       </div>
       <div class="card-desc">${m.description}</div>
       <div class="card-items">${m.items.map((it,i)=>{
-        const grams=Math.round(bowlSize*it.percentage/100*10)/10;
+        const grams=Math.round(bowlGramsFor(m)*it.percentage/100*10)/10;
         const sb=stockBadgeFor(it);
         return `<div class="item-row">
           <span class="item-pct">${it.percentage}%</span>
@@ -561,7 +585,7 @@ function renderGrid(){
           <span class="item-grams">${grams}г</span>
         </div>`;
       }).join('')}</div>
-      <div class="total-badge">Итого: ${bowlSize}г на чашу</div>
+      <div class="total-badge">Итого: ${bowlGramsFor(m)}г на чашу</div>
       ${m.coal_tip?`<div class="coal-badge"><span class="coal-icon">🪨</span><span>${coalHeat}${coalSmoke?' <span style="color:var(--text3)">→</span> '+coalSmoke:''}</span></div>`:''}
       ${m.pack_method?`<div class="pack-badge"><span class="pack-icon">${packIcon(m.pack_method)}</span><span><b style="color:#c7d2fe">${m.pack_method.charAt(0).toUpperCase()+m.pack_method.slice(1)}</b> — ${packHint(m.pack_method)}</span></div>`:''}
       <div class="card-footer">
@@ -600,7 +624,7 @@ function setRpfRev(v,el){
   document.querySelectorAll('[data-rpf-rev]').forEach(b=>b.classList.toggle('active', b.dataset.rpfRev===v));
 }
 function filteredForRandom(){
-  let pool=getAvailableMixes();
+  let pool=getAvailableMixesFiltered();
   if(rpfBowl!=='any') pool=pool.filter(m=>m.recommended_bowl===rpfBowl);
   if(rpfRev==='none') pool=pool.filter(m=>(m.review_count||0)===0);
   return pool;
