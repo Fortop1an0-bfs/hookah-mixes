@@ -62,6 +62,14 @@ header p{color:var(--text2);font-size:1rem;font-weight:300}
 .cat-filter{padding:8px 16px;border:1px solid rgba(255,255,255,0.06);border-radius:50px;background:var(--bg2);color:var(--text2);font-family:inherit;font-size:0.8rem;cursor:pointer;transition:all 0.3s}
 .cat-filter:hover,.cat-filter.active{background:var(--bg4);color:var(--text);border-color:rgba(255,255,255,0.15)}
 
+/* ── STOCK BADGES on ingredients ── */
+.item-stock{font-size:0.65rem;padding:1px 6px;border-radius:50px;margin-left:4px;font-weight:500;letter-spacing:0.3px;text-transform:uppercase}
+.stock-low{background:rgba(251,191,36,0.15);color:#fde68a;border:1px solid rgba(251,191,36,0.3)}
+.stock-empty{background:rgba(248,113,113,0.15);color:#fca5a5;border:1px solid rgba(248,113,113,0.35);text-decoration:line-through}
+.card.has-empty .card-title::after{content:"⚠ табак закончился";font-size:0.6rem;color:var(--red);margin-left:8px;vertical-align:middle;font-weight:500;letter-spacing:0.3px;text-transform:uppercase}
+.card.has-low .card-title::after{content:"⚠ заканчивается";font-size:0.6rem;color:var(--amber);margin-left:8px;vertical-align:middle;font-weight:500;letter-spacing:0.3px;text-transform:uppercase}
+.card.has-empty.has-low .card-title::after{content:"⚠ табак закончился"}
+
 /* ── GRID & CARDS ── */
 .grid{position:relative;z-index:1;max-width:1200px;margin:2rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
 .card{background:var(--bg2);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;cursor:pointer;position:relative}
@@ -111,9 +119,23 @@ body.edit-mode .avail-toggle{display:flex}
 .review-count{color:var(--text3);font-size:0.75rem}
 
 /* ── RANDOM SPLASH ── */
-.random-splash{display:none;position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);justify-content:center;align-items:center;padding:1rem}
+.random-splash{display:none;position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);justify-content:center;align-items:center;padding:1rem;overflow-y:auto}
 .random-splash.show{display:flex}
-.random-card{background:var(--bg2);border:1px solid rgba(192,132,252,0.35);border-radius:var(--radius);padding:2rem;max-width:380px;width:100%;text-align:center;position:relative;animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+.random-card{background:var(--bg2);border:1px solid rgba(192,132,252,0.35);border-radius:var(--radius);padding:2rem;max-width:420px;width:100%;text-align:center;position:relative;animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);margin:auto}
+
+/* random pre-filters + history inside splash */
+.random-prefilters{display:flex;flex-direction:column;gap:8px;margin:0.75rem 0 1rem;padding:0.75rem;background:var(--bg3);border-radius:var(--radius-sm);text-align:left}
+.rpf-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:0.78rem;color:var(--text2)}
+.rpf-row .rpf-label{min-width:64px;color:var(--text3);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.4px}
+.rpf-chip{padding:5px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:50px;background:transparent;color:var(--text2);font-family:inherit;font-size:0.76rem;cursor:pointer;transition:all 0.2s}
+.rpf-chip.active{background:var(--accent3);border-color:var(--accent);color:#fff}
+.random-history{margin-top:1rem;text-align:left;max-height:140px;overflow-y:auto}
+.rh-title{font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.rh-clear{background:none;border:none;color:var(--text3);font-family:inherit;font-size:0.7rem;cursor:pointer;padding:2px 8px;border-radius:50px}
+.rh-clear:hover{color:var(--red);background:rgba(248,113,113,0.08)}
+.rh-item{display:flex;justify-content:space-between;padding:4px 0;font-size:0.76rem;color:var(--text2);border-bottom:1px solid rgba(255,255,255,0.03)}
+.rh-item:last-child{border-bottom:none}
+.rh-item .rh-time{color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.7rem}
 @keyframes popIn{from{transform:scale(0.7);opacity:0}to{transform:scale(1);opacity:1}}
 .random-dice{font-size:3rem;margin-bottom:0.75rem;display:block;animation:spin 0.4s ease-out}
 @keyframes spin{from{transform:rotate(-180deg) scale(0)}to{transform:rotate(0deg) scale(1)}}
@@ -202,6 +224,41 @@ textarea::placeholder{color:var(--text3)}
 .cal-entry:hover{opacity:0.8}
 .cal-entry-name{font-size:0.72rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-entry-meta{font-size:0.65rem;color:rgba(255,255,255,0.7);display:flex;gap:4px;align-items:center}
+/* ── USAGE / STOCK PAGE ── */
+#usagePage{display:none;max-width:1100px;margin:2rem auto;padding:0 1.5rem}
+.usage-header{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:1.5rem;align-items:flex-end;justify-content:space-between}
+.usage-total{font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,#c084fc,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+.usage-total-label{color:var(--text3);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.5px;margin-top:-4px}
+.usage-brand-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+.usage-brand{padding:6px 14px;border-radius:50px;background:var(--bg3);font-size:0.8rem;color:var(--text2);border:1px solid rgba(255,255,255,0.06)}
+.usage-brand b{color:var(--accent)}
+.stock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.stock-card{background:var(--bg2);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-sm);padding:14px}
+.stock-card.is-low{border-color:rgba(251,191,36,0.35)}
+.stock-card.is-empty{border-color:rgba(248,113,113,0.35);opacity:0.7}
+.stock-name{font-size:0.95rem;font-weight:500;margin-bottom:2px}
+.stock-brand{font-size:0.72rem;color:var(--text3);margin-bottom:10px}
+.stock-bar-wrap{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.stock-bar{height:100%;background:linear-gradient(90deg,#34d399,#2dd4bf);transition:width 0.3s}
+.stock-card.is-low .stock-bar{background:var(--amber)}
+.stock-card.is-empty .stock-bar{background:var(--red)}
+.stock-numbers{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.stock-left{color:var(--text)}
+.stock-left.low{color:var(--amber);font-weight:600}
+.stock-left.empty{color:var(--red);font-weight:600}
+.stock-edit{display:flex;gap:6px;align-items:center}
+.stock-edit input{flex:1;padding:6px 10px;background:var(--bg3);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--text);font-family:inherit;font-size:0.82rem;outline:none}
+.stock-edit input:focus{border-color:var(--accent)}
+.stock-edit button{padding:6px 12px;background:var(--accent3);border:none;border-radius:8px;color:#fff;font-family:inherit;font-size:0.78rem;cursor:pointer;transition:all 0.15s}
+.stock-edit button:hover{background:var(--accent2)}
+.stock-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.stock-tab{padding:6px 14px;border:1px solid rgba(255,255,255,0.08);border-radius:50px;background:transparent;color:var(--text2);font-family:inherit;font-size:0.78rem;cursor:pointer;transition:all 0.2s}
+.stock-tab.active{background:var(--accent3);border-color:var(--accent);color:#fff}
+
+/* grams field in review form */
+.grams-input{padding:8px 12px;background:var(--bg3);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:0.85rem;outline:none;width:100px;transition:border-color 0.2s}
+.grams-input:focus{border-color:var(--accent)}
+
 @media(max-width:600px){
   .grid{grid-template-columns:1fr}
   .controls{padding:0.5rem 1rem}
@@ -209,6 +266,8 @@ textarea::placeholder{color:var(--text3)}
   .cal-entry-meta{display:none}
   .nav-tabs{gap:6px}
   .nav-random{padding:9px 16px;font-size:0.82rem}
+  .stock-grid{grid-template-columns:1fr}
+  .usage-total{font-size:1.8rem}
 }
 </style>
 </head>
@@ -225,6 +284,7 @@ textarea::placeholder{color:var(--text3)}
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="showPage('mixes',this)">🌿 Миксы</button>
   <button class="nav-tab" onclick="showPage('calendar',this)">📅 Календарь</button>
+  <button class="nav-tab" onclick="showPage('usage',this)">📊 Расход</button>
   <button class="nav-random" id="randBtn" onclick="rollRandom()">🎲 Рандом <span id="randCount" style="font-size:0.75rem;opacity:0.7"></span></button>
   <button class="nav-edit" id="editBtn" onclick="toggleEditMode()">✏️ Мои миксы</button>
 </div>
@@ -263,9 +323,39 @@ textarea::placeholder{color:var(--text3)}
   <div class="cal-grid" id="calGrid"></div>
 </div>
 
+<div id="usagePage">
+  <div class="usage-header">
+    <div>
+      <div class="usage-total" id="usageTotal">0 г</div>
+      <div class="usage-total-label">всего выкурено</div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--text3);max-width:280px;text-align:right">Рассчитано из отзывов: грамм чаши × процент ингредиента</div>
+  </div>
+  <div class="usage-brand-chips" id="usageBrands"></div>
+  <div class="stock-tabs">
+    <button class="stock-tab active" onclick="setStockTab('all',this)">Все</button>
+    <button class="stock-tab" onclick="setStockTab('low',this)">⚠ Заканчиваются</button>
+    <button class="stock-tab" onclick="setStockTab('empty',this)">💀 Закончились</button>
+  </div>
+  <div class="stock-grid" id="stockGrid"></div>
+</div>
+
 <!-- Random splash -->
 <div class="random-splash" id="randomSplash" onclick="if(event.target===this)closeRandom()">
   <div class="random-card" id="randomCard">
+    <div class="random-prefilters">
+      <div class="rpf-row">
+        <span class="rpf-label">Чаша:</span>
+        <button class="rpf-chip active" data-rpf-bowl="any" onclick="setRpfBowl('any',this)">Любая</button>
+        <button class="rpf-chip" data-rpf-bowl="убивашка" onclick="setRpfBowl('убивашка',this)">Убивашка</button>
+        <button class="rpf-chip" data-rpf-bowl="фанел" onclick="setRpfBowl('фанел',this)">Фанел</button>
+      </div>
+      <div class="rpf-row">
+        <span class="rpf-label">Отзывы:</span>
+        <button class="rpf-chip active" data-rpf-rev="all" onclick="setRpfRev('all',this)">Любые</button>
+        <button class="rpf-chip" data-rpf-rev="none" onclick="setRpfRev('none',this)">Только без отзывов</button>
+      </div>
+    </div>
     <span class="random-dice">🎲</span>
     <h2 id="rName"></h2>
     <span class="r-cat card-cat" id="rCat"></span>
@@ -275,6 +365,13 @@ textarea::placeholder{color:var(--text3)}
       <button class="r-open" onclick="openFromRandom()">Открыть микс</button>
       <button class="r-reroll" onclick="rollRandom()">🎲 Ещё раз</button>
       <button class="r-close" onclick="closeRandom()">Закрыть</button>
+    </div>
+    <div class="random-history" id="randomHistoryBlock">
+      <div class="rh-title">
+        <span>История</span>
+        <button class="rh-clear" onclick="clearRandomHistory()">очистить</button>
+      </div>
+      <div id="randomHistoryList"></div>
     </div>
   </div>
 </div>
@@ -302,6 +399,14 @@ function packHint(m){
 let mixes=[],bowlSize=20,activeCat='all',activeStrength='all',selectedBowl='',selectedRating=0;
 let editMode=false;
 let currentRandomId=null;
+// filters for random splash
+let rpfBowl='any', rpfRev='all';
+// stock: map "brand|name" → {grams_total, grams_used, grams_left, status}
+let stockMap={}, stockList=[], stockTab='all';
+// usage stats
+let usageStats={total_grams:0, by_brand:[], by_tobacco:[]};
+// random history
+let rollHistory=[];
 
 // ── AVAILABILITY (localStorage) ──
 function getUnavailable(){
@@ -349,9 +454,33 @@ async function load(){
   const r=await fetch('/api/mixes');
   mixes=await r.json();
   renderFilters();
+  await Promise.all([loadStock(), loadUsage(), loadRollHistory(), loadCalendar()]);
   renderGrid();
   updateRandCount();
-  await loadCalendar();
+  renderRandomHistory();
+}
+
+function stockKey(brand,name){ return brand+'|'+name; }
+
+async function loadStock(){
+  try{
+    const r=await fetch('/api/stock');
+    stockList=await r.json();
+    stockMap={};
+    stockList.forEach(s=>{ stockMap[stockKey(s.brand,s.tobacco_name)]=s; });
+  }catch(e){ stockList=[]; stockMap={}; }
+}
+async function loadUsage(){
+  try{
+    const r=await fetch('/api/usage');
+    usageStats=await r.json();
+  }catch(e){ usageStats={total_grams:0, by_brand:[], by_tobacco:[]}; }
+}
+async function loadRollHistory(){
+  try{
+    const r=await fetch('/api/random/history?limit=10');
+    rollHistory=await r.json();
+  }catch(e){ rollHistory=[]; }
 }
 
 function renderFilters(){
@@ -380,6 +509,14 @@ function setStrength(s,el){
   renderGrid();
 }
 
+function stockBadgeFor(it){
+  const s=stockMap[stockKey(it.brand,it.tobacco_name)];
+  if(!s) return {cls:'',badge:''};
+  if(s.status==='empty') return {cls:'stock-empty-item', badge:'<span class="item-stock stock-empty">закончился</span>'};
+  if(s.status==='low')   return {cls:'stock-low-item',   badge:`<span class="item-stock stock-low">${s.grams_left}г</span>`};
+  return {cls:'',badge:''};
+}
+
 function renderGrid(){
   let filtered=activeCat==='all'?mixes:mixes.filter(m=>m.category===activeCat);
   if(activeStrength!=='all') filtered=filtered.filter(m=>m.strength===activeStrength);
@@ -392,10 +529,19 @@ function renderGrid(){
     const coalParts=m.coal_tip?m.coal_tip.split('→'):'';
     const coalHeat=coalParts[0]?coalParts[0].trim():'';
     const coalSmoke=coalParts[1]?coalParts[1].trim():'';
+    // detect stock-empty / stock-low in this mix
+    let hasEmpty=false, hasLow=false;
+    m.items.forEach(it=>{
+      const s=stockMap[stockKey(it.brand,it.tobacco_name)];
+      if(!s) return;
+      if(s.status==='empty') hasEmpty=true;
+      else if(s.status==='low') hasLow=true;
+    });
+    const stockCls=(hasEmpty?' has-empty':'')+(hasLow?' has-low':'');
     const clickAction=editMode
       ? `toggleCardAvail(${m.id},this)`
       : `openModal(${m.id})`;
-    return `<div class="card${unavail?' unavailable':''}" onclick="${clickAction}">
+    return `<div class="card${unavail?' unavailable':''}${stockCls}" onclick="${clickAction}">
       <div class="avail-toggle">${unavail?'✕':'✓'}</div>
       <div class="card-header">
         <div class="card-title">${m.name}</div>
@@ -407,10 +553,11 @@ function renderGrid(){
       <div class="card-desc">${m.description}</div>
       <div class="card-items">${m.items.map((it,i)=>{
         const grams=Math.round(bowlSize*it.percentage/100*10)/10;
+        const sb=stockBadgeFor(it);
         return `<div class="item-row">
           <span class="item-pct">${it.percentage}%</span>
           <div class="item-bar" style="width:${it.percentage*1.2}px;background:${barColors[i%barColors.length]}"></div>
-          <span class="item-name">${it.tobacco_name}<span class="item-brand">${it.brand}</span></span>
+          <span class="item-name">${it.tobacco_name}<span class="item-brand">${it.brand}</span>${sb.badge}</span>
           <span class="item-grams">${grams}г</span>
         </div>`;
       }).join('')}</div>
@@ -444,19 +591,31 @@ function toggleCardAvail(id, cardEl){
 }
 
 // ── RANDOM ──
+function setRpfBowl(v,el){
+  rpfBowl=v;
+  document.querySelectorAll('[data-rpf-bowl]').forEach(b=>b.classList.toggle('active', b.dataset.rpfBowl===v));
+}
+function setRpfRev(v,el){
+  rpfRev=v;
+  document.querySelectorAll('[data-rpf-rev]').forEach(b=>b.classList.toggle('active', b.dataset.rpfRev===v));
+}
+function filteredForRandom(){
+  let pool=getAvailableMixes();
+  if(rpfBowl!=='any') pool=pool.filter(m=>m.recommended_bowl===rpfBowl);
+  if(rpfRev==='none') pool=pool.filter(m=>(m.review_count||0)===0);
+  return pool;
+}
 function rollRandom(){
-  const avail=getAvailableMixes();
-  if(!avail.length){
-    alert('Нет доступных миксов! Включи хотя бы один в «Мои миксы».');
+  const pool=filteredForRandom();
+  if(!pool.length){
+    alert('Нет миксов по этим фильтрам. Ослабь условия или включи больше миксов в «Мои миксы».');
     return;
   }
-  const m=avail[Math.floor(Math.random()*avail.length)];
+  const m=pool[Math.floor(Math.random()*pool.length)];
   currentRandomId=m.id;
   const catCls='cat-'+m.category.toLowerCase().replace(/[- ]/g,'-');
-  // animate dice
   const dice=document.querySelector('.random-dice');
   if(dice){dice.style.animation='none';void dice.offsetWidth;dice.style.animation='spin 0.4s ease-out';}
-  // animate card
   const rc=document.getElementById('randomCard');
   rc.style.animation='none'; void rc.offsetWidth; rc.style.animation='popIn 0.35s cubic-bezier(0.34,1.56,0.64,1)';
 
@@ -468,6 +627,9 @@ function rollRandom(){
   document.getElementById('rStrength').innerHTML=`<span class="strength-badge str-${m.strength}">${strIcon} ${m.strength}</span>`;
   document.getElementById('rDesc').textContent=m.description;
   document.getElementById('randomSplash').classList.add('show');
+  // log roll
+  fetch('/api/random/roll',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mix_id:m.id})})
+    .then(()=>loadRollHistory()).then(renderRandomHistory).catch(()=>{});
 }
 function closeRandom(){
   document.getElementById('randomSplash').classList.remove('show');
@@ -475,6 +637,27 @@ function closeRandom(){
 function openFromRandom(){
   closeRandom();
   if(currentRandomId) openModal(currentRandomId);
+}
+function renderRandomHistory(){
+  const list=document.getElementById('randomHistoryList');
+  if(!list) return;
+  if(!rollHistory.length){
+    list.innerHTML='<div style="color:var(--text3);font-size:0.76rem;padding:4px 0">Пока пусто — покрути рандом.</div>';
+    return;
+  }
+  list.innerHTML=rollHistory.map(h=>{
+    const strIcon=h.strength==='лёгкий'?'🍃':h.strength==='крепкий'?'💀':'🔥';
+    return `<div class="rh-item">
+      <span>${strIcon} <a href="#" onclick="closeRandom();openModal(${h.mix_id});return false" style="color:var(--text);text-decoration:none">${h.name}</a></span>
+      <span class="rh-time">${h.rolled_at}</span>
+    </div>`;
+  }).join('');
+}
+async function clearRandomHistory(){
+  if(!confirm('Очистить всю историю прокрута?')) return;
+  await fetch('/api/random/history',{method:'DELETE'});
+  await loadRollHistory();
+  renderRandomHistory();
 }
 
 // ── MODAL ──
@@ -535,6 +718,10 @@ async function openModal(id){
             <div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px">Оценка:</div>
             <div class="stars-input" id="starsInput">${[1,2,3,4,5].map(n=>`<span onclick="selRating(${n})" onmouseover="hoverRating(${n})" onmouseout="resetRating()">&#9733;</span>`).join('')}</div>
           </div>
+          <div>
+            <div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px">Грамм:</div>
+            <input type="number" min="1" max="50" step="0.5" id="reviewGrams" class="grams-input" value="${selectedBowl==='фанел'?15:20}" placeholder="20">
+          </div>
         </div>
         <div>
           <div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px">Когда курил:</div>
@@ -564,6 +751,8 @@ function selBowl(b,el){
   selectedBowl=b;
   el.parentElement.querySelectorAll('.bowl-opt').forEach(x=>x.classList.remove('selected'));
   el.classList.add('selected');
+  const g=document.getElementById('reviewGrams');
+  if(g) g.value = b==='фанел'?15:20;
 }
 function selRating(n){selectedRating=n;updateStars(n)}
 function hoverRating(n){updateStars(n)}
@@ -575,14 +764,18 @@ async function submitReview(mixId){
   if(!selectedBowl||!selectedRating){alert('Выбери чашу и оценку!');return}
   const comment=document.getElementById('reviewComment').value;
   const smoked_at=document.getElementById('smokedAt').value||null;
+  const gramsRaw=document.getElementById('reviewGrams').value;
+  const grams=gramsRaw?parseFloat(gramsRaw):null;
   const btn=document.querySelector('.submit-btn');
   btn.disabled=true;btn.textContent='Отправляю...';
   try{
-    await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mix_id:mixId,bowl_type:selectedBowl,rating:selectedRating,comment,smoked_at})});
+    await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mix_id:mixId,bowl_type:selectedBowl,rating:selectedRating,comment,smoked_at,grams})});
     showToast();
-    const r=await fetch('/api/mixes');mixes=await r.json();renderGrid();updateRandCount();
+    const r=await fetch('/api/mixes');mixes=await r.json();
+    await Promise.all([loadStock(), loadUsage(), loadCalendar()]);
+    renderGrid();updateRandCount();
     openModal(mixId);
-    await loadCalendar();
+    if(document.getElementById('usagePage').style.display==='block') renderUsage();
   }catch(e){alert('Ошибка: '+e.message)}
 }
 function showToast(){
@@ -599,7 +792,70 @@ function showPage(page,el){
   el.classList.add('active');
   document.getElementById('mixesPage').style.display=page==='mixes'?'block':'none';
   document.getElementById('calPage').style.display=page==='calendar'?'block':'none';
+  document.getElementById('usagePage').style.display=page==='usage'?'block':'none';
   if(page==='calendar') renderCalendar();
+  if(page==='usage') renderUsage();
+}
+
+// ── USAGE / STOCK ──
+function setStockTab(t,el){
+  stockTab=t;
+  document.querySelectorAll('.stock-tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderStockGrid();
+}
+function renderUsage(){
+  document.getElementById('usageTotal').textContent=(usageStats.total_grams||0)+' г';
+  const br=document.getElementById('usageBrands');
+  if(!usageStats.by_brand||!usageStats.by_brand.length){
+    br.innerHTML='<div style="color:var(--text3);font-size:0.82rem">Пока нет отзывов — добавь хотя бы один, чтобы появилась статистика.</div>';
+  }else{
+    br.innerHTML=usageStats.by_brand.map(b=>`<span class="usage-brand">${b.brand}: <b>${b.grams}г</b></span>`).join('');
+  }
+  renderStockGrid();
+}
+function renderStockGrid(){
+  const g=document.getElementById('stockGrid');
+  let list=stockList.slice();
+  if(stockTab==='low')   list=list.filter(s=>s.status==='low');
+  if(stockTab==='empty') list=list.filter(s=>s.status==='empty');
+  if(!list.length){
+    g.innerHTML='<div style="color:var(--text3);font-size:0.85rem;grid-column:1/-1;padding:2rem;text-align:center">Ничего нет 🎉</div>';
+    return;
+  }
+  g.innerHTML=list.map(s=>{
+    const pct=s.grams_total>0?Math.max(0,Math.min(100, (s.grams_left/s.grams_total)*100)):0;
+    const leftCls=s.status==='empty'?'empty':(s.status==='low'?'low':'');
+    const cardCls='stock-card'+(s.status==='low'?' is-low':'')+(s.status==='empty'?' is-empty':'');
+    return `<div class="${cardCls}">
+      <div class="stock-name">${s.tobacco_name}</div>
+      <div class="stock-brand">${s.brand}</div>
+      <div class="stock-bar-wrap"><div class="stock-bar" style="width:${pct}%"></div></div>
+      <div class="stock-numbers">
+        <span>потрачено ${s.grams_used}г</span>
+        <span class="stock-left ${leftCls}">осталось ${s.grams_left}г</span>
+      </div>
+      <div class="stock-edit">
+        <input type="number" min="0" step="1" value="${s.grams_total}" id="stock-${s.brand}-${s.tobacco_name}">
+        <button data-brand="${s.brand.replace(/"/g,'&quot;')}" data-name="${s.tobacco_name.replace(/"/g,'&quot;')}" onclick="updateStock(this)">Сохранить</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function updateStock(btn){
+  const brand=btn.dataset.brand, tobaccoName=btn.dataset.name;
+  const inp=btn.parentElement.querySelector('input');
+  const v=parseInt(inp.value,10);
+  if(isNaN(v)||v<0){alert('Введите число >= 0');return;}
+  btn.disabled=true;btn.textContent='...';
+  try{
+    const r=await fetch('/api/stock',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({brand, tobacco_name:tobaccoName, grams_total:v})});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    await Promise.all([loadStock(), loadUsage()]);
+    renderUsage();
+    renderGrid();
+  }catch(e){alert('Ошибка: '+e.message);}
+  btn.disabled=false;btn.textContent='Сохранить';
 }
 
 // ── CALENDAR ──
